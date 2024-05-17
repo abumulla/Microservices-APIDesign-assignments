@@ -59,7 +59,7 @@ public class BooksTest {
         book.setDescription("Description");
         book.setRating(4.5);
 
-        String expectedToString = "Books{id=1, name='Book Name', author='Author', description='Description', rating=4.5}";
+        String expectedToString = "Books(id=1, name=Book Name, author=Author, description=Description, rating=4.5)";
         assertEquals(expectedToString, book.toString());
     }
 }
