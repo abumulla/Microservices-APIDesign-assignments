@@ -1,0 +1,154 @@
+# 200 OK
+# 201 Created
+# 202 Accepted
+# 204 No Content
+
+# 400 Bad Request
+# 401 Unauthorized
+# 403 Forbidden
+# 404 Not Found
+# 405 Method Not Allowed
+# 408 Request Timeout
+# 415 Unsupported Media Type
+# 429 Too Many Requests
+
+# 500 Internal Server Error
+
+openapi: 3.0.0
+info:
+  title: Food Delivery API
+  description: API designed for food delivery application
+  version: 1.0.0
+servers:
+  - url: https://api.fooddelivery.com/v1
+
+paths:
+  /placeorders:
+    post:
+      summary: Place a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+  /getorders:
+    get:
+      summary: Get all orders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderResponse'
+  /orders/{orderId}:
+    get:
+      summary: Track an order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: ID of the order to track
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+  /changeorders/{orderId}:
+    put:
+      summary: Update an existing order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: ID of the order to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+  /cancelorders/{orderId}:
+    delete:
+      summary: Cancel an order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: ID of the order to cancel
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    OrderRequest:
+      type: object
+      properties:
+        customer_id:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+              product_name:
+                type: string
+              quantity:
+                type: integer
+                minimum: 1
+      required:
+        - customer_id
+        - items
+    OrderResponse:
+      type: object
+      properties:
+        order_id:
+          type: string
+        customer_id:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+              product_name:
+                type: string
+              quantity:
+                type: integer
+        status:
+          type: string
+          enum: [placed, processing, delivered, cancelled]
+      required:
+        - order_id
+        - customer_id
+        - items
+        - status
