@@ -18,12 +18,11 @@ openapi: 3.0.0
 info:
   title: Food Delivery API
   description: API designed for food delivery application
-  version: 1.0.0
+  version: v1
 servers:
-  - url: https://api.fooddelivery.com/v1
-
+  - url: http://localhost:8080/
 paths:
-  /placeorders:
+  /v1/order:
     post:
       summary: Place a new order
       requestBody:
@@ -34,12 +33,17 @@ paths:
               $ref: '#/components/schemas/OrderRequest'
       responses:
         '201':
-          description: Created
+          description: Created [Order Placed]
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderResponse'
-  /getorders:
+        '400':
+          description: Bad Request [Invalid Order Data]
+        '500':
+          description: Internal Server Error
+  
+  /v1/orders:
     get:
       summary: Get all orders
       responses:
@@ -51,14 +55,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OrderResponse'
-  /orders/{orderId}:
+        '500':
+          description: Internal Server Error
+          
+
+  /v1/order/{orderId}:
     get:
       summary: Track an order
       parameters:
         - name: orderId
           in: path
           required: true
-          description: ID of the order to track
+          description: ID of the order placed
           schema:
             type: string
       responses:
@@ -68,14 +76,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderResponse'
-  /changeorders/{orderId}:
+        '400':
+          description: Bad Request [Invalid ID]
+        '500':
+          description: Internal Server Error
+    
     put:
       summary: Update an existing order
       parameters:
         - name: orderId
           in: path
           required: true
-          description: ID of the order to update
+          description: ID of the order placed
           schema:
             type: string
       requestBody:
@@ -85,25 +97,34 @@ paths:
             schema:
               $ref: '#/components/schemas/OrderRequest'
       responses:
-        '200':
-          description: OK
+        '202':
+          description: Accepted [Order Updated]
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderResponse'
-  /cancelorders/{orderId}:
+        '400':
+          description: Bad Request [Invalid ID]
+        '500':
+          description: Internal Server Error
+
     delete:
       summary: Cancel an order
       parameters:
         - name: orderId
           in: path
           required: true
-          description: ID of the order to cancel
+          description: ID of the order placed
           schema:
             type: string
       responses:
-        '204':
-          description: No Content
+        '200':
+          description: OK [Order Cancelled]
+        '400':
+          description: Bad Request [Invalid ID]
+        '500':
+          description: Internal Server Error
+
 components:
   schemas:
     OrderRequest:
@@ -126,6 +147,7 @@ components:
       required:
         - customer_id
         - items
+    
     OrderResponse:
       type: object
       properties:
@@ -146,7 +168,10 @@ components:
                 type: integer
         status:
           type: string
-          enum: [placed, processing, delivered, cancelled]
+          enum:
+            - placed
+            - delivered
+            - cancelled
       required:
         - order_id
         - customer_id

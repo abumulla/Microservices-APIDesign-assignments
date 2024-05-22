@@ -10,7 +10,7 @@ import com.example.demo.Interceptors.CartInterceptor;
 public class WebConfigurer implements WebMvcConfigurer {
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(new CartInterceptor()).addPathPatterns("/api/v1/cart/getItems");
     }
 }

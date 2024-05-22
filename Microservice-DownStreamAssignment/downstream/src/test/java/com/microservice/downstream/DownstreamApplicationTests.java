@@ -1,13 +1,13 @@
-// package com.microservice.downstream;
+package com.microservice.downstream;
 
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// @SpringBootTest
-// class DownstreamApplicationTests {
+@SpringBootTest
+class DownstreamApplicationTests {
 
-// 	@Test
-// 	void contextLoads() {
-// 	}
+	@Test
+	void contextLoads() {
+	}
 
-// }
+}
